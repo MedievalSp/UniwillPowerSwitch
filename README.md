@@ -42,10 +42,27 @@ change it in `config.json` (`broker` section).
 
 ### Requirements
 
-- A Uniwill-based laptop with Control Center's **GCUService** and **GCUBridge** services installed
-  (tested on an Eluktronics Prometheus XVII, AMD + NVIDIA). The Control Center *app* itself is not
-  needed once this is running.
+- A Uniwill-based laptop with **Control Center installed** (tested on an Eluktronics Prometheus XVII,
+  AMD + NVIDIA). See [Do I still need Control Center?](#do-i-still-need-control-center)
 - Windows 10/11 and the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0).
+
+### Do I still need Control Center?
+
+**Yes, keep it installed.** Control Center has two parts:
+
+| Part | What it does | Needed? |
+|------|--------------|---------|
+| **GCUBridge** (Windows service) and **GCUService** (started by GCUBridge), in `C:\Program Files\OEM\<brand> Control Center\UniwillService` | Applies the CPU power limits, GPU power and fan tables. This app sends its commands to them. | **Yes, always** |
+| **Control Center app** (Microsoft Store-style package, `ControlCenter3` on Eluktronics) and its tray icon | Only an interface for the service. | **No**, it doesn't need to be running |
+
+Uninstalling Control Center removes the services too, and then nothing can switch modes. Keep it
+installed, and just stop its app from starting with Windows if you don't want two tray icons:
+
+- **Settings > Apps > Startup**, turn off **ControlCenterTray** (or Task Manager > Startup apps).
+
+The services keep running either way. You can still open Control Center from the Start menu for
+things this app doesn't cover (keyboard lighting, custom fan curves, overclocking, battery charge
+limit, display profiles). Settings saved there stay in effect because the service applies them.
 
 ## Install
 
@@ -54,7 +71,8 @@ change it in `config.json` (`broker` section).
 ```
 
 Copy `dist` somewhere permanent (e.g. `C:\Program Files\UwPower`), run `UwPowerTray.exe`, open
-**Settings** and tick **Start at logon**. That creates a Task Scheduler task that starts the tray app
+**Settings** and tick **Start at logon**. Optionally turn off **ControlCenterTray** under
+Settings > Apps > Startup (see above). That creates a Task Scheduler task that starts the tray app
 with administrator rights at logon (one UAC prompt now, none later). Administrator rights are only
 needed to read other apps' power requests (see below).
 
