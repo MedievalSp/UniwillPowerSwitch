@@ -15,6 +15,16 @@ Uniwill-based "Control Center" apps). Switch between **Balanced**, **Enthusiast*
 
 > Not affiliated with Eluktronics or Uniwill. Use at your own risk.
 
+## Download
+
+| Download | Size | Needs |
+|----------|------|-------|
+| **[UniwillPowerSwitch-win-x64-self-contained.zip](https://github.com/MedievalSp/UniwillPowerSwitch/releases/latest/download/UniwillPowerSwitch-win-x64-self-contained.zip)** (recommended) | ~67 MB | Nothing extra |
+| [UniwillPowerSwitch-win-x64.zip](https://github.com/MedievalSp/UniwillPowerSwitch/releases/latest/download/UniwillPowerSwitch-win-x64.zip) | ~0.2 MB | [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) |
+
+Both need Control Center installed (see [Requirements](#requirements)). All versions and release
+notes: [Releases](https://github.com/MedievalSp/UniwillPowerSwitch/releases).
+
 ## How it works
 
 The modes are not Windows power plans. They are applied by **GCUService**, a background service that
@@ -44,7 +54,9 @@ change it in `config.json` (`broker` section).
 
 - A Uniwill-based laptop with **Control Center installed** (tested on an Eluktronics Prometheus XVII,
   AMD + NVIDIA). See [Do I still need Control Center?](#do-i-still-need-control-center)
-- Windows 10/11 and the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0).
+- Windows 10/11 (64-bit). The small download also needs the
+  [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0); the self-contained one
+  doesn't.
 
 ### Do I still need Control Center?
 
@@ -66,15 +78,20 @@ limit, display profiles). Settings saved there stay in effect because the servic
 
 ## Install
 
-```powershell
-./build.ps1            # needs the .NET 8 SDK; outputs to .\dist
-```
+1. [Download](#download) a zip and extract it somewhere permanent, e.g. `C:\Program Files\UwPower`.
+2. Run `UwPowerTray.exe`. Its icon appears in the notification area.
+3. Open **Settings** and tick **Start at logon**. That creates a Task Scheduler task that starts the
+   tray app with administrator rights at logon (one UAC prompt now, none later). Administrator rights
+   are only needed to read other apps' power requests (see [Idle detection](#idle-detection)).
+4. Optionally turn off **ControlCenterTray** under Settings > Apps > Startup
+   (see [Do I still need Control Center?](#do-i-still-need-control-center)).
 
-Copy `dist` somewhere permanent (e.g. `C:\Program Files\UwPower`), run `UwPowerTray.exe`, open
-**Settings** and tick **Start at logon**. Optionally turn off **ControlCenterTray** under
-Settings > Apps > Startup (see above). That creates a Task Scheduler task that starts the tray app
-with administrator rights at logon (one UAC prompt now, none later). Administrator rights are only
-needed to read other apps' power requests (see below).
+To build from source instead (needs the .NET 8 SDK):
+
+```powershell
+./build.ps1             # tests + publish to .\dist
+./build.ps1 -Package    # also creates the release zips in .\artifacts
+```
 
 ## Command line
 
